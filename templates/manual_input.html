@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h3>Manual Feature Input</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="row">
+                            {% for col in feature_columns %}
+                            <div class="col-md-6 col-lg-3 mb-3">
+                                <label for="{{ col }}" class="form-label text-capitalize">{{ col.replace('_', ' ') }}</label>
+                                <input type="number" class="form-control" id="{{ col }}" name="{{ col }}" step="any" value="0" required>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary mt-3">Analyze Features</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

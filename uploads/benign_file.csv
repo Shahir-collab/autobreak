@@ -1,0 +1,2 @@
+filesize_bytes,entropy,import_count,has_packed,strings_count,api_calls_count,permission_count,network_activity,domain_count,ip_count,suspicious_strings_count,platform_encoded,obfuscation_level_encoded
+1306055,6.142225908742932,147,1,1239,159,190,6,37,8,149,1,1

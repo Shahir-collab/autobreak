@@ -1,0 +1,25 @@
+{
+  "name": "text_vectorization_1",
+  "trainable": true,
+  "dtype": {
+    "module": "keras",
+    "class_name": "DTypePolicy",
+    "config": {
+      "name": "float32"
+    },
+    "registered_name": null
+  },
+  "max_tokens": 40000,
+  "standardize": "lower_and_strip_punctuation",
+  "split": "whitespace",
+  "ngrams": null,
+  "output_mode": "int",
+  "output_sequence_length": 300,
+  "pad_to_max_tokens": false,
+  "sparse": false,
+  "ragged": false,
+  "vocabulary": null,
+  "idf_weights": null,
+  "encoding": "utf-8",
+  "vocabulary_size": 15
+}

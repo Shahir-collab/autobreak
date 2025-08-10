@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+
+  <!-- Page Title -->
+  <h2 class="mb-4 text-center">
+    🛡 Malware Analysis Report  
+    <small class="d-block text-muted">File: {{ filename }}</small>
+  </h2>
+
+  {% if result.error %}
+    <!-- Error Display -->
+    <div class="alert alert-danger text-center shadow-sm">
+      <strong>⚠ Error:</strong> {{ result.error }}
+    </div>
+  {% else %}
+    <div class="row">
+      
+      <!-- Main Analysis -->
+      <div class="col-lg-8">
+        
+        <!-- Detection Summary -->
+        {% set bin = result.prediction.binary_prediction %}
+        <div class="card mb-4 shadow-sm border-0">
+          <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">🔍 Detection Summary</h5>
+          </div>
+          <div class="card-body">
+
+            <!-- Status -->
+            <p class="fs-5 mb-3">
+              <strong>Status:</strong>
+              <span class="badge {% if bin.is_malware %}bg-danger{% else %}bg-success{% endif %} px-3 py-2 fs-6">
+                {% if bin.is_malware %}🦠 Malware Detected{% else %}✅ Benign{% endif %}
+              </span>
+            </p>
+
+            <!-- Malware Probability -->
+            <p><strong>Malware Probability:</strong>
+              {% if bin.malware_probability is defined %}
+                {{ '%.2f'|format(bin.malware_probability * 100) }}%
+              {% else %}
+                <em>Not Available</em>
+              {% endif %}
+            </p>
+            {% if bin.malware_probability is defined %}
+              <div class="progress mb-3" style="height: 18px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated
+                  {% if bin.is_malware %}bg-danger{% else %}bg-success{% endif %}"
+                  role="progressbar"
+                  style="width: {{ bin.malware_probability * 100 }}%;">
+                </div>
+              </div>
+            {% endif %}
+
+            <!-- Malware Type -->
+            {% set multi = result.prediction.multiclass_prediction %}
+            {% if bin.is_malware and multi is defined and multi.primary_type is defined %}
+              <p><strong>Identified Type:</strong>
+                <span class="badge bg-info text-dark px-2 py-1">
+                  {{ multi.primary_type | malware_label }}
+                </span>
+              </p>
+              <p><strong>Type Confidence:</strong>
+                {% if multi.confidence is defined %}
+                  {{ '%.2f'|format(multi.confidence * 100) }}%
+                {% else %}
+                  <em>Not Available</em>
+                {% endif %}
+              </p>
+              {% if multi.confidence is defined %}
+                <div class="progress mb-3" style="height: 18px;">
+                  <div class="progress-bar bg-info progress-bar-striped progress-bar-animated"
+                       role="progressbar"
+                       style="width: {{ multi.confidence * 100 }}%;">
+                  </div>
+                </div>
+              {% endif %}
+            {% elif not bin.is_malware %}
+              <p class="text-muted"><em>No malware classification performed (sample is benign).</em></p>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Risk Analysis -->
+        {% set risk = result.prediction.risk_analysis %}
+        {% if risk %}
+        <div class="card mb-4 shadow-sm border-0">
+          <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0">📊 Risk Analysis</h5>
+          </div>
+          <div class="card-body">
+
+            <div class="row align-items-center">
+              <!-- Circular Gauge -->
+              <div class="col-md-4 text-center">
+                <canvas id="riskGauge" width="150" height="150"></canvas>
+                <p class="mt-2"><strong>{{ '%.2f'|format(risk.risk_score) }}/100</strong></p>
+              </div>
+
+              <!-- Risk Info -->
+              <div class="col-md-8">
+                <p><strong>Risk Level:</strong>
+                  <span class="badge 
+                    {% if risk.risk_level == 'Critical' %}bg-danger
+                    {% elif risk.risk_level == 'High' %}bg-warning text-dark
+                    {% elif risk.risk_level == 'Medium' %}bg-primary
+                    {% else %}bg-success{% endif %}">
+                    {{ risk.risk_level }}
+                  </span>
+                </p>
+
+                <!-- Risk Factors -->
+                {% if risk.risk_factors %}
+                  <h6>⚠ Risk Factors:</h6>
+                  <ul class="list-group list-group-flush mb-2">
+                    {% for factor in risk.risk_factors %}
+                      <li class="list-group-item">{{ factor }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+
+                <!-- Recommendations -->
+                {% if risk.recommendations %}
+                  <h6>🛠 Recommendations:</h6>
+                  <ul class="list-group list-group-flush">
+                    {% for rec in risk.recommendations %}
+                      <li class="list-group-item">{{ rec }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Penetration Test (Benign Only) -->
+        {% if result.penetration_test %}
+        {% set pt = result.penetration_test %}
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-info text-dark">
+            <h5 class="mb-0">🛠 Penetration Test (Benign Sample)</h5>
+          </div>
+          <div class="card-body">
+            <p><strong>Overall Risk Score:</strong> {{ pt.total_risk_score }}/100</p>
+            <p><strong>Similarity to Malware Behavior:</strong> {{ pt.malware_similarity }}</p>
+
+            {% if pt.vulnerabilities %}
+              <h6>Detected Vulnerabilities:</h6>
+              <ul class="list-group list-group-flush">
+                {% for vuln in pt.vulnerabilities %}
+                  <li class="list-group-item">{{ vuln }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <div class="card shadow-sm border-0 mb-3">
+          <div class="card-header bg-light">
+            <h5 class="mb-0">📌 Next Steps</h5>
+          </div>
+          <div class="card-body">
+            <a href="{{ url_for('upload_file') }}" class="btn btn-primary w-100 mb-2">Upload Another File</a>
+            <a href="{{ url_for('manual_input') }}" class="btn btn-outline-secondary w-100">Manual Feature Input</a>
+          </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-light">
+            <h5 class="mb-0">ℹ System Info</h5>
+          </div>
+          <div class="card-body small text-muted">
+            <p><strong>Analysis Time:</strong> {{ result.timestamp }}</p>
+            <p><strong>Engine:</strong> EnhancedMalwareDetectionSystem</p>
+            <p><strong>Models Loaded:</strong> {{ 'Yes' if models_loaded else 'No' }}</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  {% endif %}
+</div>
+
+<!-- Chart.js for Risk Gauge -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  {% if risk %}
+  const ctx = document.getElementById('riskGauge').getContext('2d');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [{{ risk.risk_score }}, {{ 100 - risk.risk_score }}],
+        backgroundColor: [
+          {% if risk.risk_score >= 80 %}'#dc3545',
+          {% elif risk.risk_score >= 60 %}'#ffc107',
+          {% elif risk.risk_score >= 30 %}'#0d6efd',
+          {% else %}'#198754',
+          {% endif %}
+          '#e9ecef'
+        ],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      cutout: '70%',
+      plugins: { legend: { display: false } }
+    }
+  });
+  {% endif %}
+</script>
+{% endblock %}

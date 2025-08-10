@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-section text-center">
+    <div class="container">
+        <h1 class="display-4">Malware Detection & Classification System</h1>
+        <p class="lead">Advanced cybersecurity tool for malware detection, classification, and penetration testing.</p>
+        <div class="mt-4">
+            <a href="{{ url_for('upload_file') }}" class="btn btn-light btn-lg me-3">Upload File</a>
+            <a href="{{ url_for('manual_input') }}" class="btn btn-outline-light btn-lg">Manual Input</a>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row text-center">
+        <div class="col-lg-4 mb-4">
+            <div class="card h-100 p-3">
+                <div class="card-body">
+                    <h5 class="card-title">🔍 Malware Detection</h5>
+                    <p class="card-text">Binary classification to identify malicious vs benign software using machine learning.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <div class="card h-100 p-3">
+                <div class="card-body">
+                    <h5 class="card-title">🏷️ Malware Classification</h5>
+                    <p class="card-text">Classify detected malware into specific types: Trojan, Worm, Spyware, etc.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <div class="card h-100 p-3">
+                <div class="card-body">
+                    <h5 class="card-title">🔬 Penetration Testing</h5>
+                    <p class="card-text">Analyze benign software for vulnerabilities using malware patterns.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+```html

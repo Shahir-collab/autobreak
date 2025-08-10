@@ -1,0 +1,28 @@
+{
+  "text_col": "sample_text",
+  "numeric_cols": [
+    "filesize_bytes",
+    "entropy",
+    "import_count",
+    "has_packed",
+    "strings_count",
+    "api_calls_count",
+    "permission_count",
+    "network_activity",
+    "domain_count",
+    "ip_count"
+  ],
+  "target_col": "label",
+  "class_names": [
+    "adware",
+    "botnet",
+    "phishing",
+    "ransomware",
+    "rootkit",
+    "spyware",
+    "trojan",
+    "worm"
+  ],
+  "vocab_size": 15,
+  "max_seq_len": 300
+}

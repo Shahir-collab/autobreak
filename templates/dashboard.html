@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="mb-4">System Dashboard</h2>
+    
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Total Samples</h5>
+                    <h3 class="text-primary">{{ stats.total_samples_analyzed }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Malware Detected</h5>
+                    <h3 class="text-danger">{{ stats.malware_detected }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Benign Samples</h5>
+                    <h3 class="text-success">{{ stats.benign_samples }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Pen Tests</h5>
+                    <h3 class="text-info">{{ stats.penetration_tests }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header"><h5>System Status</h5></div>
+                <div class="card-body">
+                    <p><strong>Status:</strong> 
+                        <span class="badge {% if stats.system_status == 'Active' %}bg-success{% else %}bg-danger{% endif %}">
+                            {{ stats.system_status }}
+                        </span>
+                    </p>
+                    <p><strong>Models:</strong> Binary + Multiclass Classification</p>
+                    <p><strong>Features:</strong> {{ detector.feature_columns|length if detector else 'N/A' }} system features</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header"><h5>Recent Activity</h5></div>
+                <div class="card-body">
+                    <p>No recent activity to display.</p>
+                    <small class="text-muted">Activity log would appear here in a full implementation.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

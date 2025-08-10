@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+uploads/
+models/
+*.log
+.DS_Store
+test_report.html

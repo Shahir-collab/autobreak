@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.log
+
+# Virtualenv / Poetry / pipenv
+.venv/
+env/
+venv/
+
+# VSCode / IDE
+.vscode/
+.idea/
+
+# Jupyter / Testing
+.ipynb_checkpoints/
+
+# Data & models
+uploads/
+models/
+*.pkl
+*.csv
+*.json
+*.html  # generated reports
+
+# Docker artifacts
+*.pid
+*.tar
+
+# OS
+.DS_Store
+Thumbs.db
